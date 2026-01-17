@@ -7,7 +7,7 @@ public class TestConnection {
     public static void main(String[] args) {
         String url = "jdbc:mysql://localhost:3306/pharmacydb";
         String username = "root";
-        String password = "140406"; // Replace with your MySQL password if you have one
+        String password = ""; // Replace with your MySQL password if you have one
         
         try {
             // Load MySQL driver
