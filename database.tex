@@ -1,0 +1,220 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\usepackage{listings} \lstset{ language=SQL, basicstyle=\ttfamily\small, keywordstyle=\color{blue}\bfseries, commentstyle=\color{gray}, stringstyle=\color{red}, frame=single, breaklines=true }
+\geometry{a4paper, margin=2.5cm}
+\titleformat{\section}{\large\bfseries\color{blue}}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries\color{teal}}{\thesubsection}{1em}{}
+
+\title{\textbf{Modélisation du Système de Pharmacie}}
+
+
+\begin{document}
+
+\maketitle
+
+\section*{Introduction}
+Ce document présente la modélisation du système de gestion d'une pharmacie selon deux niveaux :
+\begin{itemize}
+  \item Le \textbf{Modèle Conceptuel des Données (MCD)} : basé sur les entités et associations.
+  \item Le \textbf{Modèle Logique des Données (MLD)} : basé sur les relations et les clés.
+\end{itemize}
+
+\section{Modèle Conceptuel des Données (MCD)}
+
+\subsection*{Entités}
+\begin{itemize}
+  \item \textbf{Produit} : idProduit, nomProduit, marque, quantite, prix, TVA, type
+  \item \textbf{Fournisseur} : idFournisseur, nom, prenom, numeroTelephone, adresseEmail
+  \item \textbf{Commande} : idCommande, dateCommande, periodeReception, recu, dateReception
+  \item \textbf{Client} : idClient, nom, adresse, email, nTelephone
+  \item \textbf{Vente} : idVente, dateFacture
+\end{itemize}
+
+\subsection*{Associations}
+\begin{itemize}
+  \item \textbf{Produit-Fournisseur} (n,n) : lie plusieurs produits à plusieurs fournisseurs
+  \item \textbf{LigneCommande} (n,n) : chaque commande contient plusieurs produits
+  \item \textbf{LigneVente} (n,n) : chaque vente contient plusieurs produits
+  \item \textbf{Vente-Client} (n,1) : chaque vente est liée à un seul client
+  \item \textbf{Commande-Fournisseur} (n,1) : chaque commande est passée à un seul fournisseur
+
+\end{itemize}
+
+
+\subsection*{Diagramme MCD}
+\begin{center}
+\begin{tikzpicture}[
+  entity/.style={rectangle, draw=blue!70, thick, minimum width=3.8cm, minimum height=1.2cm, align=center},
+  relation/.style={ellipse, draw=red!70, thick, minimum width=2.2cm, minimum height=1cm, align=center},
+  arrow/.style={-{Stealth[length=3mm]}, thick},
+  node distance=2cm and 5cm
+]
+
+% Entities
+\node[entity] (produit) {Produit\\ \scriptsize \textbf{idProduit}, nomProduit, marque, prix, TVA, type};
+\node[entity, right=5cm of produit] (fournisseur) {Fournisseur\\ \scriptsize \textbf{idFournisseur}, nom, prenom, tel, email};
+\node[entity, below=5cm of produit] (commande) {Commande\\ \scriptsize \textbf{idCommande}, date, recu};
+\node[entity, below=3cm of fournisseur] (client) {Client\\ \scriptsize \textbf{idClient}, nom, adresse, email, tel};
+\node[entity, below=3cm of client] (vente) {Vente\\ \scriptsize \textbf{idVente}, dateFacture};
+
+% Relations
+% Example: place relation nodes 1.2cm above or below midpoint
+\node[relation] (pf) at ($(produit)!0.5!(fournisseur)+(0.2,-1.7)$) {Produit-Fournisseur};
+\node[relation] (lc) at ($(produit)!0.5!(commande)+(0,0)$) {LigneCommande};
+\node[relation] (lv) at ($(produit)!0.5!(vente)+(0,-1.2)$) {LigneVente};
+\node[relation] (vc) at ($(vente)!0.5!(client)+(0,0)$) {Vente-Client};
+\node[relation] (cf) at ($(commande)!0.5!(fournisseur)+(0,-0.5)$) {Commande-Fournisseur};
+
+
+
+
+% Arrows with cardinalities
+\draw[arrow] (produit) -- node[above] {n} (pf);
+\draw[arrow] (fournisseur) -- node[above] {n} (pf);
+
+\draw[arrow] (produit) -- node[left] {n} (lc);
+\draw[arrow] (commande) -- node[right] {n} (lc);
+\draw[arrow, shorten >=2pt, shorten <=2pt] (commande) -- (lc);
+
+
+\draw[arrow] (produit) -- node[left] {n} (lv);
+\draw[arrow] (vente) -- node[right] {n} (lv);
+
+\draw[arrow] (vente) -- node[right] {n} (vc);
+\draw[arrow] (client) -- node[left] {1} (vc);
+\draw[arrow, shorten >=2pt, shorten <=2pt] (commande) -- node[below] {n} (cf);
+\draw[arrow, shorten >=2pt, shorten <=2pt] (fournisseur) -- node[below] {1} (cf);
+
+\end{tikzpicture}
+
+\end{center}
+
+\section{Modèle Logique des Données (MLD)}
+
+\begin{itemize}[label=--]
+  \item \textbf{Produit}(\underline{idProduit}, marque, quantite, prix,nomProduit,TVA,type )
+  \item \textbf{Fournisseur}(\underline{idFournisseur}, nom, prenom, numeroTelephone,adresseEmail)
+  \item \textbf{Produit\_Fournisseur}(\underline{idProduit}, \underline{idFournisseur})\\
+    \textit{Clés étrangères : idProduit → Produit, idFournisseur → Fournisseur}
+  \item \textbf{Commande}(\underline{idCommande}, \underline{idFournisseur}, dateCommande, periodeReception, recu, dateReception)\\
+    \textit{Clé étrangère : idFournisseur → Fournisseur}
+  \item \textbf{LigneCommande}(\underline{idCommande}, \underline{idProduit}, quantite, prixAchat)\\
+    \textit{Clés étrangères : idCommande → Commande, idProduit → Produit}
+  \item \textbf{Vente}(\underline{idVente}, dateFacture,\underline{idClient},)
+  \item \textbf{LigneVente}(\underline{idVente}, \underline{idProduit}, quantite, prixUnite)\\
+    \textit{Clés étrangères : idVente → Facture, idProduit → Produit}
+ \item \textbf{Client}(\underline{idClient}, nom,adresse,email,nTelephone)
+\end{itemize}
+\section{Initialisation SQL de la Base de Données}
+
+\begin{lstlisting}
+
+
+
+CREATE TABLE Produit (
+  idProduit INT PRIMARY KEY,
+  nomProduit VARCHAR(100),
+  marque VARCHAR(50),
+  quantite INT,
+  prix DECIMAL(10,2),
+  TVA DECIMAL(5,2),
+  type VARCHAR(50)
+);
+
+CREATE TABLE Fournisseur (
+  idFournisseur INT PRIMARY KEY,
+  nom VARCHAR(50),
+  prenom VARCHAR(50),
+  numeroTelephone VARCHAR(20),
+  adresseEmail VARCHAR(100)
+);
+
+CREATE TABLE Produit_Fournisseur (
+  idProduit INT,
+  idFournisseur INT,
+  PRIMARY KEY (idProduit, idFournisseur),
+  FOREIGN KEY (idProduit) REFERENCES Produit(idProduit),
+  FOREIGN KEY (idFournisseur) REFERENCES Fournisseur(idFournisseur)
+);
+
+CREATE TABLE Commande (
+  idCommande INT PRIMARY KEY,
+  idFournisseur INT,
+  dateCommande DATE,
+  periodeReception VARCHAR(50),
+  recu BOOLEAN,
+  dateReception DATE,
+  FOREIGN KEY (idFournisseur) REFERENCES Fournisseur(idFournisseur)
+);
+
+CREATE TABLE LigneCommande (
+  idCommande INT,
+  idProduit INT,
+  quantite INT,
+  prixAchat DECIMAL(10,2),
+  PRIMARY KEY (idCommande, idProduit),
+  FOREIGN KEY (idCommande) REFERENCES Commande(idCommande),
+  FOREIGN KEY (idProduit) REFERENCES Produit(idProduit)
+);
+
+CREATE TABLE Client (
+  idClient INT PRIMARY KEY,
+  nom VARCHAR(50),
+  adresse VARCHAR(100),
+  email VARCHAR(100),
+  nTelephone VARCHAR(20)
+);
+
+CREATE TABLE Vente (
+  idVente INT PRIMARY KEY,
+  dateFacture DATE,
+  idClient INT,
+  FOREIGN KEY (idClient) REFERENCES Client(idClient)
+);
+
+CREATE TABLE LigneVente (
+  idVente INT,
+  idProduit INT,
+  quantite INT,
+  prixUnite DECIMAL(10,2),
+  PRIMARY KEY (idVente, idProduit),
+  FOREIGN KEY (idVente) REFERENCES Vente(idVente),
+  FOREIGN KEY (idProduit) REFERENCES Produit(idProduit)
+);
+
+CREATE TABLE Employe (
+  idEmploye INT PRIMARY KEY AUTO_INCREMENT,
+  nom VARCHAR(50) NOT NULL,
+  prenom VARCHAR(50) NOT NULL,
+  login VARCHAR(50) UNIQUE NOT NULL,
+  motDePasse VARCHAR(255) NOT NULL,
+  email VARCHAR(100),
+  dateEmbauche DATE,
+  actif BOOLEAN DEFAULT TRUE
+);
+
+CREATE INDEX idx_login ON Employe(login);
+
+INSERT INTO Employe (nom, prenom, login, motDePasse, email, dateEmbauche, actif) 
+VALUES ('Admin', 'Pharmacie', 'admin', 'admin123', 'admin@pharmacie.com', NOW(), TRUE);
+
+\end{lstlisting}
+
+
+\section*{Remarques}
+\begin{itemize}
+  \item Le champ \texttt{prixTotal} est calculé dynamiquement à partir des lignes, et n'est pas stocké.
+  \item Les contraintes métier (ex: stock insuffisant) sont gérées au niveau applicatif.
+  
+\end{itemize}
+
+\end{document}
