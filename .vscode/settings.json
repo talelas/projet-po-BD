@@ -1,0 +1,11 @@
+{
+    "java.project.sourcePaths": [
+        "",
+        "models",
+        "dao"
+    ],
+    "java.project.outputPath": "classes",
+    "java.project.referencedLibraries": [
+        "mysql-connector-j-9.5.0.jar"
+    ]
+}

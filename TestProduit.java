@@ -2,6 +2,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.List;
 
+import dao.ProduitDAO;
+import models.Produit;
+
 /**
  * Classe de test pour les fonctionnalités du Produit et ProduitDAO
  */
