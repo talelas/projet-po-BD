@@ -32,7 +32,7 @@ Ce document présente la modélisation du système de gestion d'une pharmacie se
 
 \subsection*{Entités}
 \begin{itemize}
-  \item \textbf{Produit} : idProduit, nomProduit, marque, quantite, prix, TVA, type
+  \item \textbf{Produit} : idProduit (AUTO\_INCREMENT), nomProduit, marque, quantite, quantiteMinimale, prix, TVA, type
   \item \textbf{Fournisseur} : idFournisseur, nom, prenom, numeroTelephone, adresseEmail
   \item \textbf{Commande} : idCommande, dateCommande, periodeReception, recu, dateReception
   \item \textbf{Client} : idClient, nom, adresse, email, nTelephone
@@ -60,7 +60,7 @@ Ce document présente la modélisation du système de gestion d'une pharmacie se
 ]
 
 % Entities
-\node[entity] (produit) {Produit\\ \scriptsize \textbf{idProduit}, nomProduit, marque, prix, TVA, type};
+\node[entity] (produit) {Produit\\ \scriptsize \textbf{idProduit} (AUTO\_INC), nomProduit, marque, quantite, quantiteMinimale, prix, TVA, type};
 \node[entity, right=5cm of produit] (fournisseur) {Fournisseur\\ \scriptsize \textbf{idFournisseur}, nom, prenom, tel, email};
 \node[entity, below=5cm of produit] (commande) {Commande\\ \scriptsize \textbf{idCommande}, date, recu};
 \node[entity, below=3cm of fournisseur] (client) {Client\\ \scriptsize \textbf{idClient}, nom, adresse, email, tel};
@@ -101,7 +101,8 @@ Ce document présente la modélisation du système de gestion d'une pharmacie se
 \section{Modèle Logique des Données (MLD)}
 
 \begin{itemize}[label=--]
-  \item \textbf{Produit}(\underline{idProduit}, marque, quantite, prix,nomProduit,TVA,type )
+  \item \textbf{Produit}(\underline{idProduit}, nomProduit, marque, quantite, quantiteMinimale, prix, TVA, type)\\
+    \textit{Contrainte : idProduit AUTO\_INCREMENT, quantiteMinimale $\geq$ 0}
   \item \textbf{Fournisseur}(\underline{idFournisseur}, nom, prenom, numeroTelephone,adresseEmail)
   \item \textbf{Produit\_Fournisseur}(\underline{idProduit}, \underline{idFournisseur})\\
     \textit{Clés étrangères : idProduit → Produit, idFournisseur → Fournisseur}
@@ -207,6 +208,8 @@ CREATE INDEX idx_login ON Employe(login);
 INSERT INTO Employe (nom, prenom, login, motDePasse, email, dateEmbauche, actif) 
 VALUES ('Admin', 'Pharmacie', 'admin', 'admin123', 'admin@pharmacie.com', NOW(), TRUE);
 
+ALTER TABLE Produit 
+ADD COLUMN quantiteMinimale INT DEFAULT 10 NOT NULL;
 \end{lstlisting}
 
 

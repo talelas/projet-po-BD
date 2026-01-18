@@ -6,7 +6,7 @@ Le projet consiste à concevoir et implémenter un système de gestion d’une
 pharmacie. 
 Le système doit permettre une gestion complète, intuitive et automatisée des 
 opérations principales : 
-• Gestion des stocks de médicaments 
+• Gestion des stocks de médicaments  
 • Gestion des fournisseurs et des clients 
 • Suivi des opérations commerciales (ventes et commandes) 
 Fonctionnalités attendues 
