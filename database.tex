@@ -152,8 +152,8 @@ CREATE TABLE Commande (
   idCommande INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   idFournisseur INT,
   dateCommande DATE,
-  periodeReception VARCHAR(50),
-  recu BOOLEAN,
+  periodeReception INT,
+  recu BOOLEAN DEFAULT FALSE,
   dateReception DATE,
   FOREIGN KEY (idFournisseur) REFERENCES Fournisseur(idFournisseur)
 );
