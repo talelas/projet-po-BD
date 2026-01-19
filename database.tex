@@ -122,17 +122,18 @@ Ce document présente la modélisation du système de gestion d'une pharmacie se
 
 
 CREATE TABLE Produit (
-  idProduit INT PRIMARY KEY,
+  idProduit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   nomProduit VARCHAR(100),
   marque VARCHAR(50),
   quantite INT,
+  quantiteMinimale INT DEFAULT 10 NOT NULL,
   prix DECIMAL(10,2),
   TVA DECIMAL(5,2),
   type VARCHAR(50)
 );
 
 CREATE TABLE Fournisseur (
-  idFournisseur INT PRIMARY KEY,
+  idFournisseur INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   nom VARCHAR(50),
   prenom VARCHAR(50),
   numeroTelephone VARCHAR(20),
@@ -148,7 +149,7 @@ CREATE TABLE Produit_Fournisseur (
 );
 
 CREATE TABLE Commande (
-  idCommande INT PRIMARY KEY,
+  idCommande INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   idFournisseur INT,
   dateCommande DATE,
   periodeReception VARCHAR(50),
@@ -168,7 +169,7 @@ CREATE TABLE LigneCommande (
 );
 
 CREATE TABLE Client (
-  idClient INT PRIMARY KEY,
+  idClient INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   nom VARCHAR(50),
   adresse VARCHAR(100),
   email VARCHAR(100),
@@ -176,7 +177,7 @@ CREATE TABLE Client (
 );
 
 CREATE TABLE Vente (
-  idVente INT PRIMARY KEY,
+  idVente INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   dateFacture DATE,
   idClient INT,
   FOREIGN KEY (idClient) REFERENCES Client(idClient)

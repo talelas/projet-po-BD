@@ -5,7 +5,7 @@ import java.sql.Statement;
 
 public class TestConnection {
     public static void main(String[] args) {
-        String url = "jdbc:mysql://localhost:3306/pharmacydb";
+        String url = "jdbc:mysql://localhost:3306/pharmacydb1";
         String username = "root";
         String password = "140406"; // Replace with your MySQL password if you have one
         

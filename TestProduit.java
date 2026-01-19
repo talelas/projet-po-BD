@@ -10,7 +10,7 @@ import models.Produit;
  */
 public class TestProduit {
     public static void main(String[] args) {
-        String url = "jdbc:mysql://localhost:3306/pharmacydb";
+        String url = "jdbc:mysql://localhost:3306/pharmacydb1";
         String username = "root";
         String password = "140406";
         
