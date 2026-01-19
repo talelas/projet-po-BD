@@ -2,7 +2,8 @@
     "java.project.sourcePaths": [
         "",
         "models",
-        "dao"
+        "dao",
+        "testing"
     ],
     "java.project.outputPath": "classes",
     "java.project.referencedLibraries": [
