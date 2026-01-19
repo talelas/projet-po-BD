@@ -13,7 +13,13 @@
 \geometry{a4paper, margin=2.5cm}
 \titleformat{\section}{\large\bfseries\color{blue}}{\thesection}{1em}{}
 \titleformat{\subsection}{\normalsize\bfseries\color{teal}}{\thesubsection}{1em}{}
-
+\author{
+  Talel Laarif
+  \and
+Kallel Mohamed Amine
+  \and
+  Djemmali Yassine
+}
 \title{\textbf{Modélisation du Système de Pharmacie}}
 
 
@@ -37,6 +43,7 @@ Ce document présente la modélisation du système de gestion d'une pharmacie se
   \item \textbf{Commande} : idCommande, dateCommande, periodeReception, recu, dateReception
   \item \textbf{Client} : idClient, nom, adresse, email, nTelephone
   \item \textbf{Vente} : idVente, dateFacture
+  \item \textbf{Employe} : idEmploye, nom, prenom, login, motDePasse, email, dateEmbauche, actif
 \end{itemize}
 
 \subsection*{Associations}
@@ -60,11 +67,13 @@ Ce document présente la modélisation du système de gestion d'une pharmacie se
 ]
 
 % Entities
-\node[entity] (produit) {Produit\\ \scriptsize \textbf{idProduit} (AUTO\_INC), nomProduit, marque, quantite, quantiteMinimale, prix, TVA, type};
-\node[entity, right=5cm of produit] (fournisseur) {Fournisseur\\ \scriptsize \textbf{idFournisseur}, nom, prenom, tel, email};
+\node[entity] (produit) {Produit\\ \scriptsize \textbf{idProduit} (AUTO\_INC), nomProduit, marque, quantite, 
+\newline, prix, TVA, type};
+\node[entity, right=2cm of produit] (fournisseur) {Fournisseur\\ \scriptsize \textbf{idFournisseur}, nom, prenom, tel, email};
 \node[entity, below=5cm of produit] (commande) {Commande\\ \scriptsize \textbf{idCommande}, date, recu};
 \node[entity, below=3cm of fournisseur] (client) {Client\\ \scriptsize \textbf{idClient}, nom, adresse, email, tel};
 \node[entity, below=3cm of client] (vente) {Vente\\ \scriptsize \textbf{idVente}, dateFacture};
+\node[entity, below=2cm of commande] (employe) {Employe\\ \scriptsize \textbf{idEmploye}, login, nom, prenom, actif};
 
 % Relations
 % Example: place relation nodes 1.2cm above or below midpoint
@@ -114,6 +123,7 @@ Ce document présente la modélisation du système de gestion d'une pharmacie se
   \item \textbf{LigneVente}(\underline{idVente}, \underline{idProduit}, quantite, prixUnite)\\
     \textit{Clés étrangères : idVente → Facture, idProduit → Produit}
  \item \textbf{Client}(\underline{idClient}, nom,adresse,email,nTelephone)
+ \item \textbf{Employe}(\underline{idEmploye}, nom,prenom,email,login,mot de passe,dateEmbauche,actif)
 \end{itemize}
 \section{Initialisation SQL de la Base de Données}
 
@@ -209,16 +219,248 @@ CREATE INDEX idx_login ON Employe(login);
 INSERT INTO Employe (nom, prenom, login, motDePasse, email, dateEmbauche, actif) 
 VALUES ('Admin', 'Pharmacie', 'admin', 'admin123', 'admin@pharmacie.com', NOW(), TRUE);
 
-ALTER TABLE Produit 
-ADD COLUMN quantiteMinimale INT DEFAULT 10 NOT NULL;
 \end{lstlisting}
 
 
-\section*{Remarques}
-\begin{itemize}
-  \item Le champ \texttt{prixTotal} est calculé dynamiquement à partir des lignes, et n'est pas stocké.
-  \item Les contraintes métier (ex: stock insuffisant) sont gérées au niveau applicatif.
-  
-\end{itemize}
+
+\section{Diagramme UML - Couche Modèle (Objets Métier)}
+\begin{tikzpicture}[
+  class/.style={rectangle, draw=blue!70, thick, fill=blue!5, minimum width=4.5cm, minimum height=3cm, align=left, font=\scriptsize},
+  relation/.style={-Stealth, thick},
+  node distance=5.5cm
+]
+
+% Row 1
+\node[class] (produit) {
+  \textbf{Produit}\\
+  \rule{4.3cm}{0.4pt}\\
+  - idProduit: int\\
+  - nomProduit: String\\
+  - marque: String\\
+  - quantite: int\\
+  - quantiteMinimale: int\\
+  - prix: double\\
+  - tva: double\\
+  - type: String\\
+  \rule{4.3cm}{0.4pt}\\
+  + estEnStockCritique(): boolean\\
+  + augmenterQuantite(q: int): void\\
+  + diminuerQuantite(q: int): void
+};
+
+\node[class, right of=produit] (fournisseur) {
+  \textbf{Fournisseur}\\
+  \rule{4.3cm}{0.4pt}\\
+  - idFournisseur: int\\
+  - nom: String\\
+  - prenom: String\\
+  - numeroTelephone: String\\
+  - adresseEmail: String\\
+  \rule{4.3cm}{0.4pt}\\
+  + getId(): int\\
+  + getNom(): String\\
+  + setNom(nom: String): void\\
+  + getEmail(): String
+};
+
+% Row 2
+\node[class, below of=produit] (commande) {
+  \textbf{Commande}\\
+  \rule{4.3cm}{0.4pt}\\
+  - idCommande: int\\
+  - idFournisseur: int\\
+  - dateCommande: LocalDate\\
+  - periodeReception: int\\
+  - recu: boolean\\
+  - dateReception: LocalDate\\
+  \rule{4.3cm}{0.4pt}\\
+  + getId(): int\\
+  + marquerRecue(): void\\
+  + estEnRetard(): boolean
+};
+
+\node[class, right of=commande] (lignecmd) {
+  \textbf{LigneCommande}\\
+  \rule{4.3cm}{0.4pt}\\
+  - idCommande: int\\
+  - idProduit: int\\
+  - quantite: int\\
+  - prixAchat: double\\
+  \rule{4.3cm}{0.4pt}\\
+  + getQuantite(): int\\
+  + getPrixAchat(): double\\
+  + getSousTotal(): double
+};
+
+% Row 3
+\node[class, below of=commande] (client) {
+  \textbf{Client}\\
+  \rule{4.3cm}{0.4pt}\\
+  - idClient: int\\
+  - nom: String\\
+  - adresse: String\\
+  - email: String\\
+  - nTelephone: String\\
+  \rule{4.3cm}{0.4pt}\\
+  + getId(): int\\
+  + getNom(): String\\
+  + setNom(nom: String): void
+};
+
+\node[class, right of=client] (vente) {
+  \textbf{Vente}\\
+  \rule{4.3cm}{0.4pt}\\
+  - idVente: int\\
+  - dateFacture: LocalDate\\
+  - idClient: int\\
+  \rule{4.3cm}{0.4pt}\\
+  + getId(): int\\
+  + getIdClient(): int\\
+  + getDateFacture(): LocalDate\\
+  + calculerTotal(): double
+};
+
+% Row 4
+\node[class, below of=client] (lignevte) {
+  \textbf{LigneVente}\\
+  \rule{4.3cm}{0.4pt}\\
+  - idVente: int\\
+  - idProduit: int\\
+  - quantite: int\\
+  - prixUnite: double\\
+  \rule{4.3cm}{0.4pt}\\
+  + getQuantite(): int\\
+  + getPrixUnite(): double\\
+  + getSousTotal(): double
+};
+
+\node[class, right of=lignevte] (employe) {
+  \textbf{Employe}\\
+  \rule{4.3cm}{0.4pt}\\
+  - idEmploye: int\\
+  - nom: String\\
+  - prenom: String\\
+  - login: String\\
+  - motDePasse: String\\
+  - email: String\\
+  - dateEmbauche: LocalDate\\
+  - actif: boolean\\
+  \rule{4.3cm}{0.4pt}\\
+  + getId(): int\\
+  + getLogin(): String\\
+  + estActif(): boolean
+};
+
+% Relationships
+\draw[relation] (commande) -- node[above, sloped, font=\tiny] {utilise} (produit);
+\draw[relation] (commande) -- node[above, font=\tiny] {passe à} (fournisseur);
+\draw[relation] (commande) -- node[right, font=\tiny] {contient} (lignecmd);
+\draw[relation] (vente) -- node[above, font=\tiny] {pour} (client);
+\draw[relation] (vente) -- node[right, font=\tiny] {contient} (lignevte);
+
+\end{tikzpicture}
+\end{center}
+
+\section{Diagramme UML - Couche DAO (Accès aux Données)}
+
+\begin{center}
+\begin{tikzpicture}[
+  classdao/.style={
+    rectangle, draw=blue!70, thick, fill=blue!5,
+    minimum width=4.8cm, minimum height=3cm,
+    align=left, font=\scriptsize
+  },
+  relation/.style={-Stealth, thick},
+  node distance=5.5cm
+]
+
+% ===== Row 1 =====
+\node[classdao] (produitdao) {
+  \textbf{ProduitDAO}\\
+  \rule{4.6cm}{0.4pt}\\
+  + save(p:Produit): void\\
+  + update(p:Produit): void\\
+  + findById(id:int): Produit\\
+  + findAll(): List<Produit>\\
+  + delete(id:int): void
+};
+
+\node[classdao, right of=produitdao] (fournisseurdao) {
+  \textbf{FournisseurDAO}\\
+  \rule{4.6cm}{0.4pt}\\
+  + save(f:Fournisseur): void\\
+  + update(f:Fournisseur): void\\
+  + findById(id:int): Fournisseur\\
+  + findAll(): List<Fournisseur>\\
+  + delete(id:int): void
+};
+
+% ===== Row 2 =====
+\node[classdao, below of=produitdao] (commandedao) {
+  \textbf{CommandeDAO}\\
+  \rule{4.6cm}{0.4pt}\\
+  + save(c:Commande): int\\
+  + update(c:Commande): void\\
+  + findById(id:int): Commande\\
+  + findAll(): List<Commande>\\
+  + delete(id:int): void
+};
+
+\node[classdao, right of=commandedao] (lignecommandedao) {
+  \textbf{LigneCommandeDAO}\\
+  \rule{4.6cm}{0.4pt}\\
+  + save(lc:LigneCommande): void\\
+  + findByCommande(id:int): List<LigneCommande>\\
+  + deleteByCommande(id:int): void
+};
+
+% ===== Row 3 =====
+\node[classdao, below of=commandedao] (clientdao) {
+  \textbf{ClientDAO}\\
+  \rule{4.6cm}{0.4pt}\\
+  + save(c:Client): void\\
+  + update(c:Client): void\\
+  + findById(id:int): Client\\
+  + findAll(): List<Client>\\
+  + delete(id:int): void
+};
+
+\node[classdao, right of=clientdao] (ventedao) {
+  \textbf{VenteDAO}\\
+  \rule{4.6cm}{0.4pt}\\
+  + save(v:Vente): int\\
+  + findById(id:int): Vente\\
+  + findAll(): List<Vente>\\
+  + delete(id:int): void
+};
+
+% ===== Row 4 =====
+\node[classdao, below of=clientdao] (ligneventedao) {
+  \textbf{LigneVenteDAO}\\
+  \rule{4.6cm}{0.4pt}\\
+  + save(lv:LigneVente): void\\
+  + findByVente(id:int): List<LigneVente>\\
+  + deleteByVente(id:int): void
+};
+
+\node[classdao, right of=ligneventedao] (employedao) {
+  \textbf{EmployeDAO}\\
+  \rule{4.6cm}{0.4pt}\\
+  + save(e:Employe): void\\
+  + findByLogin(login:String): Employe\\
+  + findAll(): List<Employe>\\
+  + deactivate(id:int): void
+};
+
+% ===== Relations (clean & minimal) =====
+\draw[relation] (produitdao) -- (fournisseurdao);
+\draw[relation] (commandedao) -- (lignecommandedao);
+\draw[relation] (ventedao) -- (ligneventedao);
+\draw[relation] (ventedao) -- (clientdao);
+
+\end{tikzpicture}
+\end{center}
+
+
 
 \end{document}
