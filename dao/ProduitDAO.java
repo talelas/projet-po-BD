@@ -199,16 +199,50 @@ public class ProduitDAO {
     }
     
     /**
-     * Supprime un produit de la base de données
+     * Vérifie si un produit peut être supprimé (pas de ventes ou commandes associées)
      */
-    public void supprimerProduit(int idProduit) {
+    public boolean peutEtreSupprime(int idProduit) {
+        String checkSales = "SELECT COUNT(*) FROM LigneVente WHERE idProduit = ?";
+        String checkOrders = "SELECT COUNT(*) FROM LigneCommande WHERE idProduit = ?";
+        try (PreparedStatement pstmt1 = conn.prepareStatement(checkSales);
+             PreparedStatement pstmt2 = conn.prepareStatement(checkOrders)) {
+            pstmt1.setInt(1, idProduit);
+            ResultSet rs1 = pstmt1.executeQuery();
+            if (rs1.next() && rs1.getInt(1) > 0) {
+                return false; // Has sales
+            }
+            
+            pstmt2.setInt(1, idProduit);
+            ResultSet rs2 = pstmt2.executeQuery();
+            if (rs2.next() && rs2.getInt(1) > 0) {
+                return false; // Has orders
+            }
+            return true;
+        } catch (SQLException e) {
+            System.err.println("✗ Erreur: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Supprime un produit de la base de données
+     * Retourne true si supprimé, false si impossible (contraintes)
+     */
+    public boolean supprimerProduit(int idProduit) {
+        if (!peutEtreSupprime(idProduit)) {
+            System.err.println("✗ Impossible de supprimer: le produit est référencé dans des ventes ou commandes");
+            return false;
+        }
+        
         String sql = "DELETE FROM Produit WHERE idProduit = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, idProduit);
             pstmt.executeUpdate();
             System.out.println("✓ Produit supprimé!");
+            return true;
         } catch (SQLException e) {
             System.err.println("✗ Erreur: " + e.getMessage());
+            return false;
         }
     }
     

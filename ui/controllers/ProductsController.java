@@ -295,10 +295,16 @@ public class ProductsController {
             Thread deleteThread = new Thread(() -> {
                 try (Connection conn = DatabaseManager.getConnection()) {
                     ProduitDAO dao = new ProduitDAO(conn);
-                    dao.supprimerProduit(selected.getId());
+                    boolean deleted = dao.supprimerProduit(selected.getId());
                     Platform.runLater(() -> {
-                        AlertHelper.showSuccess("Success", "Product deleted successfully!");
-                        loadProducts();
+                        if (deleted) {
+                            AlertHelper.showSuccess("Success", "Product deleted successfully!");
+                            loadProducts();
+                        } else {
+                            AlertHelper.showError("Cannot Delete Product", 
+                                "This product cannot be deleted because it is referenced in sales or orders.\n\n" +
+                                "To delete this product, you must first remove all associated sales and order records.");
+                        }
                     });
                 } catch (SQLException e) {
                     Platform.runLater(() -> AlertHelper.showError("Database Error", e.getMessage()));

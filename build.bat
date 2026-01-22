@@ -20,12 +20,14 @@ if %ERRORLEVEL% EQU 0 (
     echo [✗] Backend compilation failed
 )
 
-REM Copy UI resources (FXML and CSS)
+REM Copy UI resources (FXML, CSS, and application icons/images)
 echo [2/4] Copying UI resources...
 if not exist classes\ui\views mkdir classes\ui\views
 if not exist classes\ui\styles mkdir classes\ui\styles
+if not exist classes\resources\images mkdir classes\resources\images
 copy /Y ui\views\*.fxml classes\ui\views\ >nul 2>&1
 copy /Y ui\styles\*.css classes\ui\styles\ >nul 2>&1
+copy /Y resources\images\*.png classes\resources\images\ >nul 2>&1
 echo [✓] UI resources copied
 
 REM Compile UI utility and helper classes

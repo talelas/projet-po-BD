@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import ui.utils.SceneManager;
 import ui.utils.DatabaseManager;
@@ -21,6 +22,14 @@ public class App extends Application {
         primaryStage.setWidth(1000);
         primaryStage.setHeight(700);
         primaryStage.centerOnScreen();
+        
+        // Set application icon
+        try {
+            Image icon = new Image(getClass().getResourceAsStream("/resources/images/pharmacy-icon.png"));
+            primaryStage.getIcons().add(icon);
+        } catch (Exception e) {
+            System.out.println("Could not load application icon: " + e.getMessage());
+        }
         
         // Show login screen
         sceneManager.showLoginScene();
