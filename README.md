@@ -32,6 +32,7 @@ A comprehensive JavaFX-based desktop application for managing pharmacy operation
    .\build.bat
    .\run.bat
    ```
+   gg
 
 ### Default Login
 - **Admin:** admin@pharmacy.com / admin123

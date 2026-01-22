@@ -60,97 +60,94 @@ USE pharmacydb1;
 
 ```sql
 -- Employees table
-CREATE TABLE Employe (
-    idEmploye INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(100) NOT NULL,
-    prenom VARCHAR(100) NOT NULL,
-    email VARCHAR(150) UNIQUE NOT NULL,
-    motDePasse VARCHAR(255) NOT NULL,
-    role ENUM('admin', 'employee') DEFAULT 'employee',
-    actif BOOLEAN DEFAULT TRUE
-);
 
--- Products table
 CREATE TABLE Produit (
-    idProduit INT AUTO_INCREMENT PRIMARY KEY,
-    nomProduit VARCHAR(200) NOT NULL,
-    marque VARCHAR(100),
-    quantite INT DEFAULT 0,
-    quantiteMinimale INT DEFAULT 5,
-    prix DECIMAL(10, 2) NOT NULL,
-    tva DECIMAL(5, 2) DEFAULT 0,
-    type VARCHAR(50)
+  idProduit INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  nomProduit VARCHAR(100),
+  marque VARCHAR(50),
+  quantite INT,
+  quantiteMinimale INT DEFAULT 10 NOT NULL,
+  prix DECIMAL(10,2),
+  TVA DECIMAL(5,2),
+  type VARCHAR(50)
 );
 
--- Clients table
-CREATE TABLE Client (
-    idClient INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(150) NOT NULL,
-    adresse VARCHAR(255),
-    email VARCHAR(150),
-    nTelephone VARCHAR(20)
-);
-
--- Suppliers table
 CREATE TABLE Fournisseur (
-    idFournisseur INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(100) NOT NULL,
-    prenom VARCHAR(100),
-    numeroTelephone VARCHAR(20),
-    adresseEmail VARCHAR(150)
+  idFournisseur INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  nom VARCHAR(50),
+  prenom VARCHAR(50),
+  numeroTelephone VARCHAR(20),
+  adresseEmail VARCHAR(100)
 );
 
--- Product-Supplier junction table
-CREATE TABLE produit_fournisseur (
-    idProduit INT,
-    idFournisseur INT,
-    PRIMARY KEY (idProduit, idFournisseur),
-    FOREIGN KEY (idProduit) REFERENCES Produit(idProduit) ON DELETE CASCADE,
-    FOREIGN KEY (idFournisseur) REFERENCES Fournisseur(idFournisseur) ON DELETE CASCADE
+CREATE TABLE Produit_Fournisseur (
+  idProduit INT,
+  idFournisseur INT,
+  PRIMARY KEY (idProduit, idFournisseur),
+  FOREIGN KEY (idProduit) REFERENCES Produit(idProduit),
+  FOREIGN KEY (idFournisseur) REFERENCES Fournisseur(idFournisseur)
 );
 
--- Orders table
 CREATE TABLE Commande (
-    idCommande INT AUTO_INCREMENT PRIMARY KEY,
-    idFournisseur INT NOT NULL,
-    dateCommande DATE NOT NULL,
-    periodeReception INT DEFAULT 7,
-    recu BOOLEAN DEFAULT FALSE,
-    dateReception DATE,
-    FOREIGN KEY (idFournisseur) REFERENCES Fournisseur(idFournisseur)
+  idCommande INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  idFournisseur INT,
+  dateCommande DATE,
+  periodeReception INT,
+  recu BOOLEAN DEFAULT FALSE,
+  dateReception DATE,
+  FOREIGN KEY (idFournisseur) REFERENCES Fournisseur(idFournisseur)
 );
 
--- Order lines table
 CREATE TABLE LigneCommande (
-    idCommande INT,
-    idProduit INT,
-    quantite INT NOT NULL,
-    prixAchat DECIMAL(10, 2) NOT NULL,
-    PRIMARY KEY (idCommande, idProduit),
-    FOREIGN KEY (idCommande) REFERENCES Commande(idCommande) ON DELETE CASCADE,
-    FOREIGN KEY (idProduit) REFERENCES Produit(idProduit)
+  idCommande INT,
+  idProduit INT,
+  quantite INT,
+  prixAchat DECIMAL(10,2),
+  PRIMARY KEY (idCommande, idProduit),
+  FOREIGN KEY (idCommande) REFERENCES Commande(idCommande),
+  FOREIGN KEY (idProduit) REFERENCES Produit(idProduit)
 );
 
--- Sales table
+CREATE TABLE Client (
+  idClient INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  nom VARCHAR(50),
+  adresse VARCHAR(100),
+  email VARCHAR(100),
+  nTelephone VARCHAR(20)
+);
+
 CREATE TABLE Vente (
-    idVente INT AUTO_INCREMENT PRIMARY KEY,
-    idClient INT NOT NULL,
-    dateFacture DATE NOT NULL,
-    FOREIGN KEY (idClient) REFERENCES Client(idClient)
+  idVente INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  dateFacture DATE,
+  idClient INT,
+  FOREIGN KEY (idClient) REFERENCES Client(idClient)
 );
 
--- Sale lines table
 CREATE TABLE LigneVente (
-    idVente INT,
-    idProduit INT,
-    quantite INT NOT NULL,
-    prixUnite DECIMAL(10, 2) NOT NULL,
-    PRIMARY KEY (idVente, idProduit),
-    FOREIGN KEY (idVente) REFERENCES Vente(idVente) ON DELETE CASCADE,
-    FOREIGN KEY (idProduit) REFERENCES Produit(idProduit)
+  idVente INT,
+  idProduit INT,
+  quantite INT,
+  prixUnite DECIMAL(10,2),
+  PRIMARY KEY (idVente, idProduit),
+  FOREIGN KEY (idVente) REFERENCES Vente(idVente),
+  FOREIGN KEY (idProduit) REFERENCES Produit(idProduit)
 );
-```
 
+CREATE TABLE Employe (
+  idEmploye INT PRIMARY KEY AUTO_INCREMENT,
+  nom VARCHAR(50) NOT NULL,
+  prenom VARCHAR(50) NOT NULL,
+  login VARCHAR(50) UNIQUE NOT NULL,
+  motDePasse VARCHAR(255) NOT NULL,
+  email VARCHAR(100),
+  dateEmbauche DATE,
+  actif BOOLEAN DEFAULT TRUE
+);
+
+CREATE INDEX idx_login ON Employe(login);
+
+INSERT INTO Employe (nom, prenom, login, motDePasse, email, dateEmbauche, actif) 
+VALUES ('Admin', 'Pharmacie', 'admin', 'admin123', 'admin@pharmacie.com', NOW(), TRUE);
 ### Step 3: Insert Initial Data
 
 ```sql
