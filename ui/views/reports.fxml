@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="ui.controllers.ReportsController" stylesheets="@../styles/styles.css">
+    
+    <!-- Top Bar -->
+    <top>
+        <HBox styleClass="top-bar" style="-fx-background-color: #607D8B; -fx-padding: 15;">
+            <Label text="FINANCIAL REPORTS" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="welcomeLabel" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+            <Button fx:id="backButton" text="BACK TO DASHBOARD" style="-fx-background-color: #455A64; -fx-text-fill: white;">
+                <HBox.margin>
+                    <Insets left="15"/>
+                </HBox.margin>
+            </Button>
+        </HBox>
+    </top>
+    
+    <!-- Center Content -->
+    <center>
+        <VBox spacing="15" style="-fx-padding: 20;">
+            
+            <!-- Date Range Selector -->
+            <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: #ddd; -fx-border-width: 1;">
+                <Label text="Date Range:" style="-fx-font-weight: bold;"/>
+                <DatePicker fx:id="startDatePicker" promptText="Start Date" prefWidth="150"/>
+                <Label text="to"/>
+                <DatePicker fx:id="endDatePicker" promptText="End Date" prefWidth="150"/>
+                <Button fx:id="generateButton" text="Generate Report" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="totalRevenueLabel" text="Total Revenue: 0.00 TND" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #0F7938;"/>
+            </HBox>
+            
+            <!-- Tab Pane for Different Reports -->
+            <TabPane VBox.vgrow="ALWAYS">
+                
+                <!-- Revenue by Product Tab -->
+                <Tab text="Revenue by Product" closable="false">
+                    <VBox spacing="10" style="-fx-padding: 10;">
+                        <Label text="Products sold in selected period" style="-fx-font-weight: bold;"/>
+                        <TableView fx:id="productRevenueTable" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="prodIdColumn" text="Product ID" prefWidth="100"/>
+                                <TableColumn fx:id="prodNameColumn" text="Product Name" prefWidth="250"/>
+                                <TableColumn fx:id="prodQtyColumn" text="Qty Sold" prefWidth="100"/>
+                                <TableColumn fx:id="prodRevenueColumn" text="Revenue (TND)" prefWidth="150"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </Tab>
+                
+                <!-- Revenue by Client Tab -->
+                <Tab text="Revenue by Client" closable="false">
+                    <VBox spacing="10" style="-fx-padding: 10;">
+                        <Label text="Clients' purchases in selected period" style="-fx-font-weight: bold;"/>
+                        <TableView fx:id="clientRevenueTable" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="clientIdColumn" text="Client ID" prefWidth="100"/>
+                                <TableColumn fx:id="clientNameColumn" text="Client Name" prefWidth="300"/>
+                                <TableColumn fx:id="clientRevenueColumn" text="Total Spent (TND)" prefWidth="150"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </Tab>
+                
+                <!-- Supplier Performance Tab -->
+                <Tab text="Supplier Performance" closable="false">
+                    <VBox spacing="10" style="-fx-padding: 10;">
+                        <Label text="Supplier delivery performance" style="-fx-font-weight: bold;"/>
+                        <TableView fx:id="supplierPerfTable" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="suppIdColumn" text="Supplier ID" prefWidth="100"/>
+                                <TableColumn fx:id="suppNameColumn" text="Supplier Name" prefWidth="200"/>
+                                <TableColumn fx:id="suppOrdersColumn" text="Total Orders" prefWidth="100"/>
+                                <TableColumn fx:id="suppReceivedColumn" text="Received" prefWidth="100"/>
+                                <TableColumn fx:id="suppRateColumn" text="Delivery Rate %" prefWidth="120"/>
+                                <TableColumn fx:id="suppTotalColumn" text="Total Amount (TND)" prefWidth="150"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </Tab>
+                
+            </TabPane>
+            
+        </VBox>
+    </center>
+    
+    <!-- Bottom Status Bar -->
+    <bottom>
+        <HBox style="-fx-background-color: #f5f5f5; -fx-padding: 8;">
+            <Label fx:id="statusLabel" text="Select date range and click Generate Report" style="-fx-font-size: 11px;"/>
+        </HBox>
+    </bottom>
+    
+</BorderPane>

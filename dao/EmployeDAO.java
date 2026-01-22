@@ -1,10 +1,9 @@
 package dao;
 
-import models.Employe;
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import models.Employe;
 
 /**
  * DAO pour la gestion des employés et l'authentification
@@ -73,6 +72,23 @@ public class EmployeDAO {
             } else {
                 System.out.println("✗ Ancien mot de passe incorrect");
             }
+        } catch (SQLException e) {
+            System.err.println("✗ Erreur: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Modifie les informations d'un employé
+     */
+    public void modifierEmploye(int idEmploye, String nom, String prenom, String email) {
+        String sql = "UPDATE Employe SET nom = ?, prenom = ?, email = ? WHERE idEmploye = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, nom);
+            pstmt.setString(2, prenom);
+            pstmt.setString(3, email);
+            pstmt.setInt(4, idEmploye);
+            pstmt.executeUpdate();
+            System.out.println("✓ Employé modifié!");
         } catch (SQLException e) {
             System.err.println("✗ Erreur: " + e.getMessage());
         }

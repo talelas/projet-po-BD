@@ -1,6 +1,5 @@
 package dao;
 
-import models.Produit;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import models.Produit;
 
 /**
  * DAO (Data Access Object) pour la gestion des produits en base de données
@@ -242,6 +242,25 @@ public class ProduitDAO {
             rs.getDouble("tva"),
             rs.getString("type")
         );
+    }
+
+    /**
+     * Modifie la quantité minimale d'un produit
+     */
+    public void mettreAJourQuantiteMinimale(int idProduit, int nouvelleQuantiteMin) {
+        if (nouvelleQuantiteMin < 0) {
+            System.err.println("✗ La quantité minimale ne peut pas être négative");
+            return;
+        }
+        String sql = "UPDATE Produit SET quantiteMinimale = ? WHERE idProduit = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, nouvelleQuantiteMin);
+            pstmt.setInt(2, idProduit);
+            pstmt.executeUpdate();
+            System.out.println("✓ Quantité minimale mise à jour!");
+        } catch (SQLException e) {
+            System.err.println("✗ Erreur: " + e.getMessage());
+        }
     }
 
     /**

@@ -1,9 +1,9 @@
 package dao;
 
-import models.LigneCommande;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import models.LigneCommande;
 
 /**
  * DAO pour gérer les lignes de commande
@@ -64,6 +64,20 @@ public class LigneCommandeDAO {
             pstmt.setInt(1, idCommande);
             int rows = pstmt.executeUpdate();
             System.out.println("✓ " + rows + " ligne(s) supprimée(s)");
+        } catch (SQLException e) {
+            System.err.println("✗ Erreur: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Supprime une seule ligne d'une commande identifiée par (idCommande, idProduit)
+     */
+    public void supprimerLigneCommande(int idCommande, int idProduit) {
+        String sql = "DELETE FROM LigneCommande WHERE idCommande = ? AND idProduit = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idCommande);
+            pstmt.setInt(2, idProduit);
+            pstmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("✗ Erreur: " + e.getMessage());
         }

@@ -81,6 +81,55 @@ public class SceneManager {
     }
     
     /**
+     * Show Products Management screen
+     */
+    public void showProductsScene() {
+        showScene("products");
+    }
+    
+    /**
+     * Show Settings screen
+     */
+    public void showSettingsScene() {
+        showScene("settings");
+    }
+    
+    /**
+     * Show Clients Management screen
+     */
+    public void showClientsScene() {
+        showScene("clients");
+    }
+    
+    /**
+     * Show Suppliers Management screen
+     */
+    public void showSuppliersScene() {
+        showScene("suppliers");
+    }
+    
+    /**
+     * Show Reports screen
+     */
+    public void showReportsScene() {
+        showScene("reports");
+    }
+
+    /**
+     * Show Orders screen
+     */
+    public void showOrdersScene() {
+        showScene("orders");
+    }
+
+    /**
+     * Show Sales screen
+     */
+    public void showSalesScene() {
+        showScene("sales");
+    }
+    
+    /**
      * Apply stylesheet to scene
      */
     private void loadStylesheet(Scene scene) {

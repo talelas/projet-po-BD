@@ -52,7 +52,7 @@ public class DashboardController {
         if (employee != null) {
             welcomeLabel.setText("Welcome, " + employee.getNom() + " " + employee.getPrenom());
             
-            // Hide settings button if not admin
+            // Settings button only visible for admin
             if (!SessionManager.isAdmin()) {
                 settingsButton.setVisible(false);
                 settingsButton.setManaged(false);
@@ -71,7 +71,7 @@ public class DashboardController {
                 int totalProducts = produitDAO.obtenirTousProduits().size();
                 
                 // Get low stock count
-                int lowStock = produitDAO.obtenirProduitsStockCritique().size();
+                int lowStock = produitDAO.obtenirProduitsEnStockCritique().size();
                 
                 // Get total clients
                 ClientDAO clientDAO = new ClientDAO(conn);
@@ -101,13 +101,13 @@ public class DashboardController {
      */
     private void setupButtonHandlers() {
         logoutButton.setOnAction(e -> handleLogout());
-        productsButton.setOnAction(e -> showComingSoon("Products"));
-        clientsButton.setOnAction(e -> showComingSoon("Clients"));
-        suppliersButton.setOnAction(e -> showComingSoon("Suppliers"));
-        ordersButton.setOnAction(e -> showComingSoon("Orders"));
-        salesButton.setOnAction(e -> showComingSoon("Sales"));
-        reportsButton.setOnAction(e -> showComingSoon("Reports"));
-        settingsButton.setOnAction(e -> showComingSoon("Settings"));
+        productsButton.setOnAction(e -> navigateToProducts());
+        clientsButton.setOnAction(e -> navigateToClients());
+        suppliersButton.setOnAction(e -> navigateToSuppliers());
+        ordersButton.setOnAction(e -> navigateToOrders());
+        salesButton.setOnAction(e -> navigateToSales());
+        reportsButton.setOnAction(e -> navigateToReports());
+        settingsButton.setOnAction(e -> navigateToSettings());
     }
     
     /**
@@ -139,5 +139,68 @@ public class DashboardController {
             "Coming Soon", 
             screenName + " screen is not yet implemented.\n\nWe'll create it next!"
         );
+    }
+    
+    /**
+     * Navigate to Products screen
+     */
+    private void navigateToProducts() {
+        Stage stage = (Stage) productsButton.getScene().getWindow();
+        SceneManager sceneManager = new SceneManager(stage);
+        sceneManager.showProductsScene();
+    }
+    
+    /**
+     * Navigate to Settings screen
+     */
+    private void navigateToSettings() {
+        Stage stage = (Stage) settingsButton.getScene().getWindow();
+        SceneManager sceneManager = new SceneManager(stage);
+        sceneManager.showSettingsScene();
+    }
+    
+    /**
+     * Navigate to Clients screen
+     */
+    private void navigateToClients() {
+        Stage stage = (Stage) clientsButton.getScene().getWindow();
+        SceneManager sceneManager = new SceneManager(stage);
+        sceneManager.showClientsScene();
+    }
+    
+    /**
+     * Navigate to Suppliers screen
+     */
+    private void navigateToSuppliers() {
+        Stage stage = (Stage) suppliersButton.getScene().getWindow();
+        SceneManager sceneManager = new SceneManager(stage);
+        sceneManager.showSuppliersScene();
+    }
+    
+    /**
+     * Navigate to Reports screen
+     */
+    private void navigateToReports() {
+        Stage stage = (Stage) reportsButton.getScene().getWindow();
+        SceneManager sceneManager = new SceneManager(stage);
+        sceneManager.showReportsScene();
+    }
+
+    /**
+     * Navigate to Orders screen
+     */
+    private void navigateToOrders() {
+        Stage stage = (Stage) ordersButton.getScene().getWindow();
+        SceneManager sceneManager = new SceneManager(stage);
+        sceneManager.showOrdersScene();
+    }
+
+    /**
+     * Navigate to Sales screen
+     */
+    private void navigateToSales() {
+        Stage stage = (Stage) salesButton.getScene().getWindow();
+        SceneManager sceneManager = new SceneManager(stage);
+        sceneManager.showSalesScene();
     }
 }

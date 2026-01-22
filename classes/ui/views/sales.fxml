@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ui.controllers.SalesController" stylesheets="@../styles/styles.css">
+    <top>
+        <HBox style="-fx-background-color: #1976D2; -fx-padding: 15;">
+            <Label text="SALES" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="welcomeLabel" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+            <Button fx:id="backButton" text="BACK" style="-fx-background-color: #0D47A1; -fx-text-fill: white;">
+                <HBox.margin><Insets left="15"/></HBox.margin>
+            </Button>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="12" style="-fx-padding: 16;">
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Search by client name..." prefWidth="220"/>
+                <Button fx:id="searchButton" text="Search" styleClass="button"/>
+                <Button fx:id="refreshButton" text="Refresh" styleClass="button"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="newSaleButton" text="New Sale" style="-fx-background-color: #43A047; -fx-text-fill: white;"/>
+                <Button fx:id="confirmSaleButton" text="Confirm Sale" disable="true" style="-fx-background-color: #0288D1; -fx-text-fill: white;"/>
+            </HBox>
+
+            <TabPane VBox.vgrow="ALWAYS">
+                <Tab text="Current Sale" closable="false">
+                    <TableView fx:id="cartTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="cartProdColumn" text="Product" prefWidth="220"/>
+                            <TableColumn fx:id="cartQtyColumn" text="Qty" prefWidth="80"/>
+                            <TableColumn fx:id="cartPriceColumn" text="Unit Price" prefWidth="120"/>
+                            <TableColumn fx:id="cartTotalColumn" text="Total" prefWidth="120"/>
+                        </columns>
+                    </TableView>
+                </Tab>
+                <Tab text="History" closable="false">
+                    <TableView fx:id="historyTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="histIdColumn" text="ID" prefWidth="60"/>
+                            <TableColumn fx:id="histClientColumn" text="Client" prefWidth="200"/>
+                            <TableColumn fx:id="histDateColumn" text="Date" prefWidth="120"/>
+                            <TableColumn fx:id="histTotalColumn" text="Total" prefWidth="120"/>
+                        </columns>
+                    </TableView>
+                </Tab>
+            </TabPane>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Cart Actions" style="-fx-font-weight: bold;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="addLineButton" text="Add Line" style="-fx-background-color: #43A047; -fx-text-fill: white;"/>
+                <Button fx:id="removeLineButton" text="Remove Line" disable="true" style="-fx-background-color: #E53935; -fx-text-fill: white;"/>
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Label fx:id="statusLabel" text="Ready" style="-fx-font-size: 11px;"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>
